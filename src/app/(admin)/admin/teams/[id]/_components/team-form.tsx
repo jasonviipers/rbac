@@ -14,14 +14,14 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { UserFormSchema, UserFormValue } from "@/lib/validators/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { User } from "@/server/db/schema";
+import { Team } from "@/server/db/schema";
 import { getFetch } from "@/lib/getFetch";
 
 interface IUser {
-  initialData: User | null;
+  initialData: Team | null;
 }
 
-export default function UserForm({ initialData }: IUser) {
+export default function TeamForm({ initialData }: IUser) {
   const router = useRouter();
   const params = useParams();
   
@@ -36,8 +36,6 @@ export default function UserForm({ initialData }: IUser) {
     resolver: zodResolver(UserFormSchema),
     defaultValues: {
       name: initialData?.name || "",
-      email: initialData?.email || "",
-      password: "",
     }
   });
 
@@ -53,7 +51,7 @@ export default function UserForm({ initialData }: IUser) {
 
       toast.success(toastMessage);
       if (!initialData) {
-        router.push("/admin/users");
+        router.push("/admin/teams");
         router.refresh();
       }
     } catch (error) {
@@ -71,7 +69,7 @@ export default function UserForm({ initialData }: IUser) {
 
       if (data) {
         toast.success("User deleted");
-        router.push("/admin/users");
+        router.push("/admin/teams");
         router.refresh();
       } else {
         toast.error("An error occurred while deleting the user");
@@ -111,41 +109,7 @@ export default function UserForm({ initialData }: IUser) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="User email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {!initialData && (
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        id="password"
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="current-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+            
           </div>
           <Button disabled={loading} type="submit" className="ml-auto">
             {actionLabel}

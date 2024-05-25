@@ -2,23 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import CellAction from "./cell-action";
+import { User } from "@/server/db/schema";
 
-export type UserColumn = {
-    id: string;
-    name: string;
-    discordId: string | null;
-    githubId: string | null;
-    email: string;
-    emailVerified: boolean;
-    hashedPassword: string | null;
-    avatar: string | null;
-    currentTeamId: string | null;
-    createdAt: Date;
-    updatedAt: Date | null;
-}
-
-
-export const columns: ColumnDef<UserColumn>[] = [
+export const columns: ColumnDef<User>[] = [
     {
         header: "Name",
         accessorKey: "name",

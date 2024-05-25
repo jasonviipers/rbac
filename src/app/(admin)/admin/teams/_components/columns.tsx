@@ -2,17 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import CellAction from "./cell-action";
-import { Permission } from "@/server/db/schema";
+import { Team } from "@/server/db/schema";
 
-
-export const columns: ColumnDef<Permission>[] = [
+export const columns: ColumnDef<Team>[] = [
     {
         header: "Name",
         accessorKey: "name",
     },
     {
-        header: "Description",
-        accessorKey: "description",
+        header: "Owner",
+        accessorKey: "ownerId",
     },
     {
         header: "Date",
@@ -22,5 +21,4 @@ export const columns: ColumnDef<Permission>[] = [
         id: "actions",
         cell: ({ row }) => <CellAction data={row.original} />
     }
-
 ];

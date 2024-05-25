@@ -3,47 +3,87 @@ import { useParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
-import { PermissionFormSchema, PermissionFormValue} from "@/lib/validators/schema";
-import { Permission } from "@/server/db/schema";
+import { PermissionFormSchema, PermissionFormValue } from "@/lib/validators/schema";
+import { Permission, Team, teams } from "@/server/db/schema";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { getFetch } from "@/lib/getFetch";
+import AlertModal from "@/components/modals/alert-modal";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-interface IPermission{
-    initialData?: Permission
+interface IPermission {
+    teams: Team[];
+    initialData: Permission | null;
 }
 
-export default function PermissionForm({ initialData }: IPermission) {
+export default function PermissionForm({ initialData, teams }: IPermission) {
     const router = useRouter();
     const params = useParams();
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const name = initialData ? 'Edit Permission' : 'Create Permission'
+    const title = initialData ? 'Edit Permission' : 'Create Permission'
     const descriptions = initialData ? 'Edit Permission' : 'Create Permission'
+    const toastMessage = initialData ? 'Permission updated' : 'Permission created';
 
     const form = useForm<PermissionFormValue>({
         resolver: zodResolver(PermissionFormSchema),
         defaultValues: {
-            name: "",
-            description: "",
+            name: initialData?.name || "",
+            description: initialData?.description || "",
+            teamId: initialData?.teamId || "",
         }
     });
 
-    const onSubmit = async (values: PermissionFormValue) => { };
+    const onSubmit = async (values: PermissionFormValue) => {
+        setLoading(true);
+        try {
+            const endpoint = initialData && params.id ? `/api/permissions/${params.id}` : "/api/permissions";
+            const method = initialData ? 'PATCH' : 'POST';
+            const data = await getFetch({ url: endpoint, method, body: values });
 
-    const onDelete = async () => { };
+            if (!data) throw new Error("An error occurred while processing the request");
+
+            toast.success(toastMessage);
+            if (!initialData) {
+                router.push("/admin/permissions");
+                router.refresh();
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error("Failed to create permission");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const onDelete = async () => {
+        setLoading(true);
+        try {
+            const data = await getFetch({ url: `/api/permissions/${params.id}`, method: 'DELETE' });
+            router.refresh();
+            toast.success("Permission deleted");
+        } catch (error) {
+            toast.error("Failed to delete permission");
+        } finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    };
 
     return (
         <>
             <div className="flex items-center justify-between">
-                <Heading title={name} description={descriptions} />
+                <Heading title={title} description={descriptions} />
                 {initialData && (
                     <Button variant="destructive"
                         size="icon" onClick={() => setOpen(true)}>
@@ -70,6 +110,35 @@ export default function PermissionForm({ initialData }: IPermission) {
                         />
                         <FormField
                             control={form.control}
+                            name="teamId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Team</FormLabel>
+                                    <Select disabled={loading}
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue defaultValue={field.value} placeholder="Select a team" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectContent>
+                                                {teams && teams.map((team) => (
+                                                    <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
@@ -84,6 +153,12 @@ export default function PermissionForm({ initialData }: IPermission) {
                     </div>
                 </form>
             </Form>
+            <AlertModal
+                isOpen={open}
+                loading={loading}
+                onClose={() => setOpen(false)}
+                onConfirm={onDelete}
+            />
         </>
     )
 }

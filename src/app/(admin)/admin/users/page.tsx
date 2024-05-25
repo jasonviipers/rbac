@@ -1,28 +1,23 @@
 import { db } from "@/server/db";
 import UserClient from "./_components/user-client";
 import { User } from "@/server/db/schema";
-import { format } from "date-fns";
 
 export default async function UserPage() {
-  const findUser = await db.query.users.findMany({
-    with: {
-      teams: {
-        with: {
-          owner: true,
-          permissions: true,
-          roles: true,
-          rolePermissions: true
-        }
-      }
-    }
-  });
+  const findUser = await db.query.users.findMany();
 
   const formatted: User[] = findUser.map((user) => {
     return {
       id: user.id,
       name: user.name,
+      discordId: user.discordId || null,
+      githubId: user.githubId || null,
       email: user.email,
-      createdAt: user.createdAt ? format(new Date(user.createdAt), "MMMM do, yyyy") : ""
+      emailVerified: user.emailVerified || false,
+      hashedPassword: user.hashedPassword || null,
+      avatar: user.avatar || null,
+      currentTeamId: user.currentTeamId || null,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
     };
   });
 

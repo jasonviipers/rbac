@@ -1,21 +1,21 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
-import {  PermissionColumn, columns } from "./columns";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
+import { Permission } from "@/server/db/schema";
+import { columns } from "./columns";
 
 interface IPermissionClient {
-    data: PermissionColumn[]
+    data: Permission[]
 }
 
 export default function PermissionClient({ data }: IPermissionClient) {
     const router = useRouter();
-    const params = useParams();
 
     return (
         <>
@@ -25,10 +25,10 @@ export default function PermissionClient({ data }: IPermissionClient) {
                     description='Manage Roles'
                 />
                 <Button
-                    onClick={() => router.push(`/permission/new`)}
+                    onClick={() => router.push(`/admin/permissions/new`)}
                 >
                     <Plus className='h-4 w-4 mr-2' />
-                    Add new
+                    Create Permission
                 </Button>
             </div>
             <Separator />

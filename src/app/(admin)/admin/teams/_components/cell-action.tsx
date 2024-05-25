@@ -1,7 +1,7 @@
 "use client"
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal } from "lucide-react";
 
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -11,11 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import AlertModal from "@/components/modals/alert-modal";
 import { toast } from "sonner";
-import { User } from "@/server/db/schema";
 import { getFetch } from "@/lib/getFetch";
+import { Team } from "@/server/db/schema";
 
 interface ICellAction {
-    data: User
+    data: Team;
 }
 
 export default function CellAction({ data }: ICellAction) {
@@ -33,7 +33,7 @@ export default function CellAction({ data }: ICellAction) {
         try {
             setLoading(true);
             await getFetch({
-                url: `/api/users/${data.id}`,
+                url: `/api/teams/${data.id}`,
                 method: "DELETE"
             });
           
@@ -63,7 +63,7 @@ export default function CellAction({ data }: ICellAction) {
                         <Copy className="mr-2 h-4 w-4" />
                         Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`users/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`teams/${data.id}`)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Update
                     </DropdownMenuItem>

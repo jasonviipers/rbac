@@ -11,30 +11,35 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import AlertModal from "@/components/modals/alert-modal";
 import { toast } from "sonner";
-import { PermissionColumn } from "./columns";
+import { Permission } from "@/server/db/schema";
+import { getFetch } from "@/lib/getFetch";
 
 interface ICellAction {
-    data: PermissionColumn
+    data: Permission
 }
-
 
 export default function CellAction({ data }: ICellAction) {
     const router = useRouter();
-    const params = useParams();
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const onCopy = (id: string) => { 
+    const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-       toast.success("Id copied to clipboard");
+        toast.success("Id copied to clipboard");
     }
 
     const onDelete = async () => {
         try {
             setLoading(true);
+            await getFetch({
+                url: `/api/permissions/${data.id}`,
+                method: "DELETE"
+            });
+            router.refresh();
+            toast.success("Permission deleted");
         } catch (error) {
-
+            toast.error("Failed to delete permission");
         } finally {
             setLoading(false);
             setOpen(false);
@@ -57,7 +62,7 @@ export default function CellAction({ data }: ICellAction) {
                         <Copy className="mr-2 h-4 w-4" />
                         Copy Id
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push(`roles/${data.id}`)}>
+                    <DropdownMenuItem onClick={() => router.push(`permissions/${data.id}`)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Update
                     </DropdownMenuItem>

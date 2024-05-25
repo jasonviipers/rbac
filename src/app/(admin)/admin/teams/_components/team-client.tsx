@@ -8,27 +8,27 @@ import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-import { User } from "@/server/db/schema";
+import { Team } from "@/server/db/schema";
 
 interface IUserClient {
-    data: User[];
+    data: Team[];
 }
 
-export default function UserClient({ data }: IUserClient) {
+export default function TeamClient({ data }: IUserClient) {
     const router = useRouter();
 
     return (
         <>
             <div className='flex items-center justify-between'>
                 <Heading
-                    title={`User (${data.length})`}
-                    description='Manage Users'
+                    title={`Team (${data.length})`}
+                    description='Manage your team members here.'
                 />
                 <Button
-                    onClick={() => router.push(`/admin/users/new`)}
+                    onClick={() => router.push(`/admin/teams/new`)}
                 >
                     <Plus className='h-4 w-4 mr-2' />
-                    Create User
+                    Create Team
                 </Button>
             </div>
             <Separator />

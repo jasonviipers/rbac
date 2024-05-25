@@ -23,6 +23,11 @@ export default function MainNav({
       active: pathname === "/admin/users"
     },
     {
+      href: "/admin/teams",
+      label: "Teams",
+      active: pathname === "/admin/teams"
+    },
+    {
       href: "/admin/permissions",
       label: "Permissions",
       active: pathname === "/admin/permissions"
