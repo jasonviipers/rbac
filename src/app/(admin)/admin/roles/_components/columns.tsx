@@ -6,11 +6,9 @@ import CellAction from "./cell-action";
 export type RoleColumn = {
     id: string;
     name: string;
-    description?: string;
+    description: string;
     createdAt: string;
-    updatedAt?: string | null;
 }
-
 
 export const columns: ColumnDef<RoleColumn>[] = [
     {

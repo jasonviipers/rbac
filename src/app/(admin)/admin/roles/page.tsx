@@ -8,17 +8,19 @@ export default async function Page() {
 
     const findRoles = await db.query.role.findMany();
 
-    const formatedRole:RoleColumn[] = findRoles.map((role) => (
+    const formatedRole: RoleColumn[] = findRoles.map((role) => (
         {
+            id: role.id,
             name: role.name,
-            createdAt:role?.createdAt ? format(role.createdAt, "MMMM do, yyyy") : ""
+            description: role.descriptions || '',
+            createdAt: format(new Date(role.createdAt), 'dd/MM/yyyy'),
         }
     ));
 
     return (
         <div className="flex flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <RoleClient data={[]}/>
+                <RoleClient data={formatedRole} />
             </div>
         </div>
     )

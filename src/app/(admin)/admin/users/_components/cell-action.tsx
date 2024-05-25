@@ -11,11 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import AlertModal from "@/components/modals/alert-modal";
 import { toast } from "sonner";
-import { User } from "@/server/db/schema";
 import { getFetch } from "@/lib/getFetch";
+import { UserColumns } from "./columns";
 
 interface ICellAction {
-    data: User
+    data: UserColumns
 }
 
 export default function CellAction({ data }: ICellAction) {

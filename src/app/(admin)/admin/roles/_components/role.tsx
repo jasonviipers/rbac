@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
 import { RoleColumn, columns } from "./columns";
@@ -10,12 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 
 interface IRoleClient {
-    data: RoleColumn[]
+    data: RoleColumn[] 
 }
 
 export default function RoleClient({ data }: IRoleClient) {
     const router = useRouter();
-    const params = useParams();
 
     return (
         <>
@@ -25,10 +24,10 @@ export default function RoleClient({ data }: IRoleClient) {
                     description='Manage Roles'
                 />
                 <Button
-                    onClick={() => router.push(`/roles/new`)}
+                    onClick={() => router.push(`/admin/roles/new`)}
                 >
                     <Plus className='h-4 w-4 mr-2' />
-                    Add new
+                    Create Role
                 </Button>
             </div>
             <Separator />

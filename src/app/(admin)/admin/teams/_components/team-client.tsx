@@ -3,15 +3,14 @@
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
-import { columns} from "./columns";
+import { Teamcolumns, columns} from "./columns";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-import { Team } from "@/server/db/schema";
 
 interface IUserClient {
-    data: Team[];
+    data: Teamcolumns[];
 }
 
 export default function TeamClient({ data }: IUserClient) {

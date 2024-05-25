@@ -2,16 +2,22 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import CellAction from "./cell-action";
-import { Team } from "@/server/db/schema";
 
-export const columns: ColumnDef<Team>[] = [
+export type Teamcolumns = {
+    id: string;
+    name: string;
+    ownerId?: string;
+    ownerName: string;
+    createdAt: string
+  }
+export const columns: ColumnDef<Teamcolumns>[] = [
     {
         header: "Name",
         accessorKey: "name",
     },
     {
         header: "Owner",
-        accessorKey: "ownerId",
+        accessorKey: "ownerName",
 
     },
     {

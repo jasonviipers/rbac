@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import AlertModal from "@/components/modals/alert-modal";
 import { toast } from "sonner";
+import { getFetch } from "@/lib/getFetch";
 
 interface ICellAction {
     data: RoleColumn
 }
-
 
 export default function CellAction({ data }: ICellAction) {
     const router = useRouter();
@@ -25,16 +25,25 @@ export default function CellAction({ data }: ICellAction) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const onCopy = (id: string) => { 
+    const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-       toast.success("Id copied to clipboard");
+        toast.success("Id copied to clipboard");
     }
 
     const onDelete = async () => {
         try {
             setLoading(true);
-        } catch (error) {
+            const res = await getFetch({
+                url: `/api/teams/${data.id}`,
+                method: "DELETE"
+            })
+            if (res.status === 200) {
+                toast.success("Team deleted successfully");
+                router.refresh();
+            }
 
+        } catch (error) {
+            toast.error("Failed to delete teams");
         } finally {
             setLoading(false);
             setOpen(false);

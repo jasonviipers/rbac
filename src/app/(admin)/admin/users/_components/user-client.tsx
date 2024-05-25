@@ -3,15 +3,14 @@
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
-import { columns } from "./columns";
+import { UserColumns, columns } from "./columns";
 import Heading from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-import { User } from "@/server/db/schema";
 
 interface IUserClient {
-    data: User[];
+    data: UserColumns[];
 }
 
 export default function UserClient({ data }: IUserClient) {

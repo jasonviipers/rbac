@@ -12,6 +12,9 @@ import { Role } from "@/server/db/schema";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { getFetch } from "@/lib/getFetch";
+import { toast } from "sonner";
+import AlertModal from "@/components/modals/alert-modal";
 
 interface IRole {
     initialData?: Role
@@ -26,17 +29,57 @@ export default function RoleForm({ initialData }: IRole) {
 
     const name = initialData ? 'Edit Role' : 'Create Role'
     const descriptions = initialData ? 'Edit Role' : 'Create Role'
+    const toastMessage = initialData ? "Role updated" : "Role created";
 
     const form = useForm<RoleFormValue>({
         resolver: zodResolver(RoleFormSchema),
         defaultValues: {
             name: "",
+            description: "",
         }
     });
 
-    const onSubmit = async (values: RoleFormValue) => { };
+    const onSubmit = async (values: RoleFormValue) => {
+        setLoading(true);
+        try {
+            const endpoint = initialData && params.id ? `/api/roles/${params.id}` : "/api/roles";
+            const method = initialData ? 'PATCH' : 'POST';
+            const data = await getFetch({ url: endpoint, method, body: values });
 
-    const onDelete = async () => { };
+            if (!data) throw new Error("An error occurred while processing the request");
+
+            toast.success(toastMessage);
+            if (!initialData) {
+                router.push("/admin/roles");
+                router.refresh();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const onDelete = async () => {
+        setLoading(true);
+        try {
+            const data = await getFetch({ url: `/api/roles/${params.id}`, method: 'DELETE' });
+
+            if (data) {
+                toast.success("Role deleted");
+                router.push("/admin/roles");
+                router.refresh();
+            } else {
+                toast.error("An error occurred while deleting the Role");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -69,6 +112,12 @@ export default function RoleForm({ initialData }: IRole) {
                     </div>
                 </form>
             </Form>
+            <AlertModal
+                isOpen={open}
+                loading={loading}
+                onClose={() => setOpen(false)}
+                onConfirm={onDelete}
+            />
         </>
     )
 }

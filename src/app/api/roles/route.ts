@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateId } from "lucia";
 
 import { useAuth } from "@/lib/validators/useAuth";
 import { db } from "@/server/db";
-import { Scrypt } from "oslo/password";
 import { eq } from "drizzle-orm";
 import { role } from "@/server/db/schema";
 

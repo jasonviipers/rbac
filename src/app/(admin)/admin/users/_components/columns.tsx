@@ -2,9 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import CellAction from "./cell-action";
-import { User } from "@/server/db/schema";
 
-export const columns: ColumnDef<User>[] = [
+export type UserColumns = {
+    name: string;
+    id: string;
+    email: string;
+    currentTeamId: string | null;
+    createdAt: string;
+}
+
+export const columns: ColumnDef<UserColumns>[] = [
     {
         header: "Name",
         accessorKey: "name",

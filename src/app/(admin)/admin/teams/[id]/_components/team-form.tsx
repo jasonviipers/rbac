@@ -74,7 +74,7 @@ export default function TeamForm({ initialData, users }: IUser) {
         router.push("/admin/teams");
         router.refresh();
       } else {
-        toast.error("An error occurred while deleting the user");
+        toast.error("An error occurred while deleting the team");
       }
     } catch (error) {
       console.error('Error:', error);

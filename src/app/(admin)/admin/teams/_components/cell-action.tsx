@@ -12,10 +12,10 @@ import { Icons } from "@/components/icons";
 import AlertModal from "@/components/modals/alert-modal";
 import { toast } from "sonner";
 import { getFetch } from "@/lib/getFetch";
-import { Team } from "@/server/db/schema";
+import { Teamcolumns } from "./columns";
 
 interface ICellAction {
-    data: Team;
+    data: Teamcolumns;
 }
 
 export default function CellAction({ data }: ICellAction) {
