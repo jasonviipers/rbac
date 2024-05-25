@@ -35,6 +35,8 @@ export async function PATCH(req: NextRequest,
     try {
         console.log("=========> API PATCH", params.id, "<=========");
         const { user } = await useAuth();
+
+        if (!user) return new NextResponse("Unauthorized", { status: 401 });
         const permissionId = params.id;
         const body = await req.json();
 

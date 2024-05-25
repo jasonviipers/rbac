@@ -21,8 +21,12 @@ export const PermissionFormSchema = z.object({
   teamId: z.string(),
 });
 
-
+export const TeamsFormSchema = z.object({
+  name: z.string().min(3, { message: 'Be at least 3 characters long' }),
+  ownerId: z.string(),
+});
 
 export type RoleFormValue = z.infer<typeof RoleFormSchema>;
 export type UserFormValue = z.infer<typeof UserFormSchema>;
 export type PermissionFormValue = z.infer<typeof PermissionFormSchema>;
+export type TeamsFormValue = z.infer<typeof TeamsFormSchema>;

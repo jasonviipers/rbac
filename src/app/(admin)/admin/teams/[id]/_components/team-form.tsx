@@ -12,38 +12,40 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { UserFormSchema, UserFormValue } from "@/lib/validators/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Team } from "@/server/db/schema";
+import { Team, User } from "@/server/db/schema";
 import { getFetch } from "@/lib/getFetch";
+import { TeamsFormSchema, TeamsFormValue } from "@/lib/validators/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface IUser {
+  users: User[];
   initialData: Team | null;
 }
 
-export default function TeamForm({ initialData }: IUser) {
+export default function TeamForm({ initialData, users }: IUser) {
   const router = useRouter();
   const params = useParams();
-  
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  
-  const title = initialData ? "Edit User" : "Create a new User";
-  const toastMessage = initialData ? "User updated" : "User created";
+
+  const title = initialData ? "Edit Team" : "Create a new Team";
+  const toastMessage = initialData ? "Team updated" : "Team created";
   const actionLabel = initialData ? "Save changes" : "Create";
-  
-  const form = useForm<UserFormValue>({
-    resolver: zodResolver(UserFormSchema),
+
+  const form = useForm<TeamsFormValue>({
+    resolver: zodResolver(TeamsFormSchema),
     defaultValues: {
       name: initialData?.name || "",
+      ownerId: initialData?.ownerId || "",
     }
   });
 
-  const onSubmit = async (values: UserFormValue) => {
-    console.log("Form submitted", values); // Debug log
+  const onSubmit = async (values: TeamsFormValue) => {
     setLoading(true);
     try {
-      const endpoint = initialData && params.id ? `/api/users/${params.id}` : "/api/users";
+      const endpoint = initialData && params.id ? `/api/teams/${params.id}` : "/api/teams";
       const method = initialData ? 'PATCH' : 'POST';
       const data = await getFetch({ url: endpoint, method, body: values });
 
@@ -65,7 +67,7 @@ export default function TeamForm({ initialData }: IUser) {
   const onDelete = async () => {
     setLoading(true);
     try {
-      const data = await getFetch({ url: `/api/users/${params.id}`, method: 'DELETE' });
+      const data = await getFetch({ url: `/api/teams/${params.id}`, method: 'DELETE' });
 
       if (data) {
         toast.success("User deleted");
@@ -109,7 +111,33 @@ export default function TeamForm({ initialData }: IUser) {
                 </FormItem>
               )}
             />
-            
+            <FormField
+              control={form.control}
+              name="ownerId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categories</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} placeholder="Select a owner" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button disabled={loading} type="submit" className="ml-auto">
             {actionLabel}

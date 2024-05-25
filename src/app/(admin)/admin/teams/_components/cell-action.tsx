@@ -38,9 +38,9 @@ export default function CellAction({ data }: ICellAction) {
             });
           
             router.refresh();
-            toast.success("User deleted");
+            toast.success("Teams deleted");
         } catch (error) {
-            toast.error("Failed to delete user");
+            toast.error("Failed to delete teams");
         } finally {
             setLoading(false);
             setOpen(false);

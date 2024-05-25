@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateId } from "lucia";
+
 import { useAuth } from "@/lib/validators/useAuth";
 import { db } from "@/server/db";
 import { NewUser, users } from "@/server/db/schema";

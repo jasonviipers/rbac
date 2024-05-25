@@ -9,11 +9,12 @@ export default async function PermissionPage({ params }: { params: { id: string 
         where: (eq(permission.id, params.id))
     });
 
+    const getTeam = await db.query.teams.findMany();
 
     return (
         <div className="flex flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <PermissionForm initialData={findPermission!} />
+                <PermissionForm initialData={findPermission!} teams={getTeam} />
             </div>
         </div>
     );

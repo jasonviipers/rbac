@@ -12,6 +12,7 @@ export const columns: ColumnDef<Team>[] = [
     {
         header: "Owner",
         accessorKey: "ownerId",
+
     },
     {
         header: "Date",
