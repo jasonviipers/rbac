@@ -6,12 +6,18 @@ import { RoleColumn } from "./_components/columns";
 
 export default async function Page() {
 
-    const findRoles = await db.query.role.findMany();
+    const findRoles = await db.query.role.findMany({
+        with:{
+            team: true
+        }
+    });
 
     const formatedRole: RoleColumn[] = findRoles.map((role) => (
         {
             id: role.id,
             name: role.name,
+            teamId: role.teamId,
+            teamName: role.team.name,
             description: role.descriptions || '',
             createdAt: format(new Date(role.createdAt), 'dd/MM/yyyy'),
         }

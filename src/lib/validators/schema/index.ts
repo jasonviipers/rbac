@@ -2,6 +2,7 @@ import * as z from "zod";
 
 export const RoleFormSchema = z.object({
   name: z.string().min(3, { message: 'Be at least 3 characters long' }),
+  teamId: z.string().min(3, { message: 'Be at least 3 characters long' }),
   description: z.string().min(3, { message: 'Be at least 3 characters long' }).optional(),
 });
 

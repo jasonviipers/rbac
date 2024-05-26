@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import AlertModal from "@/components/modals/alert-modal";
 
 interface IRole {
-    initialData?: Role
+    initialData: Role
 }
 
 export default function RoleForm({ initialData }: IRole) {
@@ -36,6 +36,7 @@ export default function RoleForm({ initialData }: IRole) {
         defaultValues: {
             name: "",
             description: "",
+            teamId: "",
         }
     });
 
