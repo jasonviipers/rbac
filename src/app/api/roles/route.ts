@@ -32,11 +32,6 @@ export async function POST(req: NextRequest) {
         if (!name) return new NextResponse("Name is required", { status: 400 });
         if (!descriptions) return new NextResponse("Descriptions is required", { status: 400 });
 
-        const findRoles = await db.select().from(role)
-            .where(eq(role.id, user.id));
-
-        if (!findRoles) return new NextResponse("Unauthorized", { status: 401 });
-
         const newRole = await db.insert(role).values({
             id: generateId(12),
             name,

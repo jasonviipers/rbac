@@ -70,7 +70,7 @@ export async function login(_: any, formData: FormData): Promise<ActionResponse<
     // if (existingUser.role === "user") {
     //     return redirect('/user');
     // }
-    return redirect('/');
+    return redirect('/employees');
 }
 
 export async function signup(_: any, formData: FormData): Promise<ActionResponse<SignupInput>> {

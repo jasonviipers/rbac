@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // const { user } = await useAuth();
-    // if (!user) return new NextResponse("Please authenticate to access this resource", { status: 401 });
+    const { user } = await useAuth();
+    if (!user) return new NextResponse("Please authenticate to access this resource", { status: 401 });
 
     const body = await req.json();
     const { name, email, password } = body;

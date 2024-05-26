@@ -18,7 +18,7 @@ export default async function Page() {
             name: role.name,
             teamId: role.teamId,
             teamName: role.team.name,
-            description: role.descriptions || '',
+            descriptions: role.descriptions || '',
             createdAt: format(new Date(role.createdAt), 'dd/MM/yyyy'),
         }
     ));

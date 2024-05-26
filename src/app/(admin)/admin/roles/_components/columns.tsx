@@ -8,7 +8,7 @@ export type RoleColumn = {
     name: string;
     teamId: string;
     teamName: string;
-    description: string;
+    descriptions: string;
     createdAt: string;
 }
 
@@ -20,6 +20,10 @@ export const columns: ColumnDef<RoleColumn>[] = [
     {
         header: "Team",
         accessorKey: "teamName",
+    },
+    {
+        header: "Descriptions",
+        accessorKey: "descriptions",
     },
     {
         header: "Date",

@@ -34,7 +34,6 @@ export async function PATCH(req: NextRequest,
     { params }: { params: { id: string } }
 ) {
     try {
-        console.log("=========> API PATCH", params.id, "<=========");
         const { user } = await useAuth();
         if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
@@ -57,12 +56,14 @@ export async function PATCH(req: NextRequest,
             return new NextResponse("Missing or invalid fields: name, ownerId", { status: 400 });
         }
 
-        await db.update(teams).set({
+        const teamsUpdate = await db.update(teams).set({
             name,
             ownerId,
-        }).where(eq(teams.id, teamId));
+        }).where(eq(teams.id, teamId)).returning();
 
-        return new NextResponse("Team updated", { status: 200 });
+        if(!teamsUpdate) return new NextResponse("Team not updated", { status: 400 });
+
+        return new NextResponse(JSON.stringify(teamsUpdate));
     } catch (error) {
         return new NextResponse("Internal error", { status: 500 });
     }

@@ -8,16 +8,14 @@ import { users } from "@/server/db/schema";
 
 
 export default async function Page(){
-    const  {user} = await useAuth()
-        if(!user){
-        return null
-    }
+    const  {user} = await useAuth();
+
+    if(!user) return null;
 
     const getUserInfo = await db.query.users.findFirst({
         where: eq(users.id, user.id)
     })
 
-console.log(getUserInfo)
     return(
         <div className="flex flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
@@ -27,32 +25,3 @@ console.log(getUserInfo)
         </div>
     )
 }
-
-// import Heading from "@/components/ui/heading";
-// import { useAuth } from "@/lib/validators/useAuth";
-// import { db } from "@/server/db";
-// import { users } from "@/server/db/schema";
-// import { Separator } from "@radix-ui/react-dropdown-menu";
-// import { eq } from "drizzle-orm";
-// import { redirect } from "next/navigation";
-
-// export default async function Page() {
-//     const { user } = await useAuth()
-    
-//     if (!user) {
-//         redirect("/login")
-//     }
-
-//     const getUser = await db.query.users.findFirst({
-//         where: eq(users.id, user.id)
-//     });
-
-//     return (
-//         <div className="flex flex-col">
-//             <div className="flex-1 space-y-4 p-8 pt-6">
-//                 <Heading title="Dashboard" description={`Welcome back ${getUser?.name}`} />
-//                 <Separator />
-//             </div>
-//         </div>
-//     )
-// }

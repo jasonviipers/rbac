@@ -8,19 +8,22 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { RoleFormSchema, RoleFormValue } from "@/lib/validators/schema";
-import { Role } from "@/server/db/schema";
+import { Role, Team } from "@/server/db/schema";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { getFetch } from "@/lib/getFetch";
 import { toast } from "sonner";
 import AlertModal from "@/components/modals/alert-modal";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface IRole {
-    initialData: Role
+    teams: Team[];
+    initialData: Role | null;
 }
 
-export default function RoleForm({ initialData }: IRole) {
+export default function RoleForm({ initialData, teams }: IRole) {
     const router = useRouter();
     const params = useParams();
 
@@ -30,13 +33,14 @@ export default function RoleForm({ initialData }: IRole) {
     const name = initialData ? 'Edit Role' : 'Create Role'
     const descriptions = initialData ? 'Edit Role' : 'Create Role'
     const toastMessage = initialData ? "Role updated" : "Role created";
+    const actionLabel = initialData ? "Save changes" : "Create";
 
     const form = useForm<RoleFormValue>({
         resolver: zodResolver(RoleFormSchema),
         defaultValues: {
-            name: "",
-            description: "",
-            teamId: "",
+            name: initialData?.name || "",
+            descriptions: initialData?.descriptions || "",
+            teamId: initialData?.teamId || "",
         }
     });
 
@@ -51,8 +55,8 @@ export default function RoleForm({ initialData }: IRole) {
 
             toast.success(toastMessage);
             if (!initialData) {
-                router.push("/admin/roles");
                 router.refresh();
+                router.push("/admin/roles");
             }
         } catch (error) {
             console.error('Error:', error);
@@ -110,7 +114,50 @@ export default function RoleForm({ initialData }: IRole) {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="teamId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Categories</FormLabel>
+                                    <Select
+                                        disabled={loading}
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue defaultValue={field.value} placeholder="Select a owner" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {teams.map((team) => (
+                                                <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="descriptions"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Descriptions</FormLabel>
+                                    <FormControl>
+                                        <Textarea disabled={loading} placeholder="Role descriptions" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
+                    <Button disabled={loading} type="submit" className="ml-auto">
+                        {actionLabel}
+                    </Button>
                 </form>
             </Form>
             <AlertModal

@@ -1,7 +1,7 @@
 "use client"
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal } from "lucide-react";
 
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -24,9 +24,9 @@ export default function CellAction({ data }: ICellAction) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const onCopy = (id: string) => { 
+    const onCopy = (id: string) => {
         navigator.clipboard.writeText(id);
-       toast.success("Id copied to clipboard");
+        toast.success("Id copied to clipboard");
     }
 
     const onDelete = async () => {
@@ -36,11 +36,29 @@ export default function CellAction({ data }: ICellAction) {
                 url: `/api/users/${data.id}`,
                 method: "DELETE"
             });
-          
+
             router.refresh();
             toast.success("User deleted");
         } catch (error) {
             toast.error("Failed to delete user");
+        } finally {
+            setLoading(false);
+            setOpen(false);
+        }
+    }
+
+    const onDisconnect = async () => {
+        try {
+            setLoading(true);
+            await getFetch({
+                url: `/api/session/${data.id}`,
+                method: "DELETE"
+            });
+
+            router.refresh();
+            toast.success("User disconnected");
+        } catch (error) {
+            toast.error("Failed to disconnect user");
         } finally {
             setLoading(false);
             setOpen(false);
@@ -66,6 +84,10 @@ export default function CellAction({ data }: ICellAction) {
                     <DropdownMenuItem onClick={() => router.push(`users/${data.id}`)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Update
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDisconnect()}>
+                        <Icons.disconnect className="mr-2 h-4 w-4" />
+                        Disconnect
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setOpen(true)}>
                         <Icons.trash className="mr-2 h-4 w-4 " />
